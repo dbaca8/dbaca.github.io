@@ -1,7 +1,7 @@
 ## Blackbody Radiation
 ## Planck's Law
 
-Planck's law describes the spectral density of electromagnetic radiation emitted by a black body in thermal equilibrium, emissivity=1, at a given temperature T, where there is zero net flow of matter or energy between the body and its environment.
+Planck's law describes the spectral density of electromagnetic radiation emitted by a black body in thermal equilibrium, at emissivity=1, and given temperature T, where there is zero net flow of matter or energy between the body and its environment.
 
 Planck's Law (Wavelength):
 $${\displaystyle B_{\lambda }(\lambda ,T)={\frac {2hc^{2}}{\lambda ^{5}}}{\frac {1}{e^{(hc/\lambda kT)}-1}}}$$
