@@ -1,0 +1,249 @@
+---
+title: "Blackbody Radiation: spectral density of electromagnetic radiation emitted by a blackbody"
+author: "dB"
+date: "8/13/2022"
+output: ioslides_presentation
+widescreen: true
+smaller: true
+runtime: shiny
+---
+
+```{r setup,  include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Planck's Law
+Planck's law examines the spectral density of electromagnetic radiation emitted by a blackbody in thermal equilibrium, at emissivity=1, and given temperature T, where there is zero net flow of matter or energy between the body and its environment.
+Planck's Law Equation (Wavelength):
+$${\displaystyle B_{\lambda }(\lambda ,T)={\frac {2hc^{2}}{\lambda ^{5}}}{\frac {1}{e^{(hc/\lambda kT)}-1}}}$$
+Planck's Law Equation (Frequency):
+$${\displaystyle B(\nu ,T)={\frac {2h\nu ^{3}}{c^{2}}}{\frac {1}{e^{{(h\nu/ }{kT})}-1}}}$$
+
+### Wien's Law descibes peak wavelength and peak frequency.
+
+```{r, warning=FALSE, message=FALSE, error=FALSE}
+library(stats)
+# contants
+h <- 6.625 * 10^(-34)
+k <- 1.380649 * 10^(-23)
+c <- 2.99792458 * 10^8
+b_λ  <- 2.897771955 *10^(-3)
+
+# Temperature range
+T_7k <- 7000
+T_6k <- 6000
+T_5k <- 5000
+T_4k <- 4000
+T_3k <- 3000
+
+# wavelength range in meters
+wav_len <- 10^seq(-8, -5.7, 0.01)
+
+# Spectral Density function
+B <- function(x, y) {
+# spectral density function of B with x= wave length and y= temperature
+result <- (2 * h * (c^2)) / (x^(5) * ((exp((h*c) / (x * k * y))) -1))
+}
+
+# spectral densities
+B_7k <- B(x=wav_len, y=T_7k)
+B_6k <- B(x=wav_len, y=T_6k)
+B_5k <- B(x=wav_len, y=T_5k)
+B_4k <- B(x=wav_len, y=T_4k)
+B_3k <- B(x=wav_len, y=T_3k)
+
+# Wien's Law for peak wavelength(maximum) at specific temperature
+lambda_7k <- b_λ/T_7k
+lambda_6k <- b_λ/T_6k
+lambda_5k <- b_λ/T_5k
+lambda_4k <- b_λ/T_4k
+lambda_3k <- b_λ/T_3k
+
+Wien_7k <- B(x=lambda_7k, y=T_7k)
+Wien_6k <- B(x=lambda_6k, y=T_6k)
+Wien_5k <- B(x=lambda_5k, y=T_5k)
+Wien_4k <- B(x=lambda_4k, y=T_4k)
+Wien_3k <- B(x=lambda_3k, y=T_3k)
+
+wav_len_max <- c(lambda_7k, lambda_6k, lambda_5k, lambda_4k, lambda_3k)
+#wav_len_max*10^9
+
+Wien_max <- c(Wien_7k, Wien_6k, Wien_5k, Wien_4k, Wien_3k)
+#Wien_max
+```
+## Planck's Law for wavelength with Wien's Law showing peak wavelengths at temperature T(K)
+```{r}
+plot(wav_len*10^9, B_7k*10^-13, type="l", col="blue", ylab="B, Spectral Radiance, 10^13 * W/m^2/sr/nm", xlab="Wavelength (nm)")
+lines(wav_len*10^9, B_6k*10^-13, type="l", col="green")
+lines(wav_len*10^9, B_5k*10^-13, type="l", col="yellow")
+lines(wav_len*10^9, B_4k*10^-13, type="l", col="orange")
+lines(wav_len*10^9, B_3k*10^-13, type="l", col="red")
+lines(wav_len_max*10^9, Wien_max*10^-13, type="l", col="purple")
+legend('topright', legend=c('7000K','6000K','5000K','4000K', '3000K'), col=c('blue', 'green', 'yellow', 'orange','red'), lty=1)
+points(wav_len_max*10^9, Wien_max*10^-13) 
+title("Plank's Law and Wien's Law vs Wavelength")
+```
+
+
+```{r, warning=FALSE, message=FALSE, error=FALSE}
+library(stats)
+# contants
+b_ν <- 5.88 * 10^(10)
+
+# Temperature range
+T_7k <- 7000
+T_6k <- 6000
+T_5k <- 5000
+T_4k <- 4000
+T_3k <- 3000
+
+# wavelength range in THz (10^12 Hz)
+freq_span <- 10^seq(9, 15.3, 0.001)
+
+# Spectral Density function vs Frequency
+B_freq <- function(x, y) {
+# spectral density function of B with x=frequency and y= temperature
+#result <- (2 * h * (c^2)) / (x^(5) * ((exp((h*c) / (x * k * y))) -1))
+result <- (2 * h * (x^3)) / (c^(2) * ((exp((h*x) / (k * y))) -1))
+}
+
+# Spectral Density function span vs Frequency at specific Temperature
+B_7k <- B_freq(x=freq_span, y=T_7k)
+B_6k <- B_freq(x=freq_span, y=T_6k)
+B_5k <- B_freq(x=freq_span, y=T_5k)
+B_4k <- B_freq(x=freq_span, y=T_4k)
+B_3k <- B_freq(x=freq_span, y=T_3k)
+
+# Wien's Law for peak wavelength(maximum) at specific temperature
+freq_7k <- b_ν*T_7k
+freq_6k <- b_ν*T_6k
+freq_5k <- b_ν*T_5k
+freq_4k <- b_ν*T_4k
+freq_3k <- b_ν*T_3k
+max_B_freq <- c(freq_3k, freq_4k, freq_5k, freq_6k, freq_7k)
+#max_B_freq*10^-12
+
+Wien_7k <- B_freq(x=freq_7k, y=T_7k)
+Wien_6k <- B_freq(x=freq_6k, y=T_6k)
+Wien_5k <- B_freq(x=freq_5k, y=T_5k)
+Wien_4k <- B_freq(x=freq_4k, y=T_4k)
+Wien_3k <- B_freq(x=freq_3k, y=T_3k)
+Wien_max <- c(Wien_3k, Wien_4k, Wien_5k, Wien_6k, Wien_7k)
+#Wien_max * 10^8
+```
+
+## Planck's Law for frequency with Wien's Law showing peak frequencies at temperature T(K)
+```{r}
+plot(freq_span*10^-12, B_7k*10^8, type="l", col="blue", ylab="B, Spectral Radiance, 10^8 * W/m^2/sr/THz", xlab="Frequency (THz)")
+lines(freq_span*10^-12, B_6k*10^8, type="l", col="green")
+lines(freq_span*10^-12, B_5k*10^8, type="l", col="yellow")
+lines(freq_span*10^-12, B_4k*10^8, type="l", col="orange")
+lines(freq_span*10^-12, B_3k*10^8, type="l", col="red")
+lines(max_B_freq*10^-12, Wien_max*10^8, type="l", col="purple")
+points(max_B_freq*10^-12, Wien_max*10^8, col = "dark red") 
+legend('topright', legend=c('7000K','6000K','5000K','4000K', '3000K'), col=c('blue', 'green', 'yellow', 'orange','red'), lty=1)
+title("Plank's Law and Wien's Law vs Frequency")
+```
+
+## Blackbody Spectral Radiance Interactive App
+```{r, echo = FALSE}
+library(shiny)
+library(stats)
+# contants
+h <- 6.625 * 10^(-34)
+k <- 1.380649 * 10^(-23)
+c <- 2.99792458 * 10^8
+b_λ  <- 2.897771955 *10^(-3)
+b_ν <- 5.88 * 10^(10)
+
+# wavelength range in meters
+wav_len <- 10^seq(-8, -5.5, 0.01)
+
+# wavelength range in THz (10^12 Hz)
+freq_span <- 10^seq(9, 15.3, 0.01)
+
+# Spectral Radiance function
+B_λ <- function(x, y) {
+    # spectral density function of B with x= wave length and y= temperature
+    result <- (2 * h * (c^2)) / (x^(5) * ((exp((h*c) / (x * k * y))) -1))
+}
+B_v <- function(x, y) {
+    # spectral density function of B with x=frequency and y= temperature
+    #result <- (2 * h * (c^2)) / (x^(5) * ((exp((h*c) / (x * k * y))) -1))
+    result <- (2 * h * (x^3)) / (c^(2) * ((exp((h*x) / (k * y))) -1))
+}
+
+ui <- fluidPage(
+  headerPanel(h3('Blackbody Spectral Radiance')),
+  sidebarPanel(
+      selectInput(inputId = "Xaxis", 
+                  label = "Choose your X-axis Unit", 
+                  choices = c("Wavelength (nm)", "Frequency (THz)")),
+  
+     sliderInput(inputId = "slider1", 
+                 label = "Choose a Temperature (Kelvin)", 
+                 value = 5000, min = 0, max = 10000)),
+
+            mainPanel(
+                h4("Temperature (Kelvin)"),
+                h3(textOutput("text0")),
+                h4(textOutput("text1")),
+                h3(textOutput("text2")),
+                h4("Peak Wavelength (nm)"),
+                h3(textOutput("text3")),
+               h4("Peak Frequency (THz)"),
+                h3(textOutput("text4")),
+            plotOutput('plot1')
+  ))
+
+
+server <- function(input, output) {
+        
+
+            output$text0 <- renderText(input$slider1)
+        
+        output$text1 <- renderText({
+            
+            if (input$Xaxis == "Wavelength (nm)") {
+                "Peak Spectral Radiance (W/m^2/sr/nm)"}
+            
+            else if (input$Xaxis == "Frequency (THz)"){ 
+                "Peak Spectral Radiance (W/m^2/sr/THz)"}
+        })
+        
+        output$text2 <- renderText({
+            
+            if (input$Xaxis == "Wavelength (nm)") {
+                (B_λ(b_λ/input$slider1, input$slider1))}
+            
+            else if (input$Xaxis == "Frequency (THz)"){ 
+                (B_v(b_ν * input$slider1, input$slider1))*10^(16)}
+        })
+        
+        output$text3 <- renderText((b_λ/input$slider1 * 10^9))
+        output$text4 <- renderText((b_ν * input$slider1) * 10^(-12))
+      
+# plot       
+        output$plot1 <- renderPlot({
+            
+            if (input$Xaxis == "Wavelength (nm)") {
+                plot(wav_len*10^9, ((B_λ(wav_len, input$slider1))*10^-13), 
+                     type="l", 
+                     col="blue", 
+                     ylab="B, Spectral Radiance, 10^13 * W/m^2/sr/nm", 
+                     xlab="Wavelength (nm)")
+                    title("Plank's Law and Wien's Law vs Wavelength")}
+            
+            else if (input$Xaxis == "Frequency (THz)"){ 
+                plot(freq_span*10^-12, ((B_v(freq_span, input$slider1))*10^8), 
+                     type="l", 
+                     col="blue", 
+                     ylab="B, Spectral Radiance, 10^8 * W/m^2/sr/THz", 
+                     xlab="Frequency (THz)")
+                    title("Plank's Law and Wien's Law vs Frequency")}}
+            )}
+
+shinyApp(ui = ui, server = server)
+```
+
+
