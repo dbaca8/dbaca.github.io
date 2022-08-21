@@ -58,6 +58,8 @@ server <- function(input, output) {
                  col="blue", 
                  ylab="B, Spectral Radiance, 10^13 * W/m^2/sr/nm", 
                  xlab="Wavelength (nm)")
+            abline(v= (b_λ/input$slider1 * 10^9), col="red", lwd=1, lty=1)
+            points((b_λ/input$slider1 * 10^9), (B_λ(b_λ/input$slider1, input$slider1)*10^-13), col = "dark red")
             title("Plank's Law and Wien's Law vs Wavelength")}
         
         else if (input$Xaxis == "Frequency (THz)"){ 
@@ -66,5 +68,7 @@ server <- function(input, output) {
                  col="blue", 
                  ylab="B, Spectral Radiance, 10^8 * W/m^2/sr/THz", 
                  xlab="Frequency (THz)")
+            abline(v= (b_ν * input$slider1 * 10^-12), col="red", lwd=1, lty=1)
+            points((b_ν * input$slider1* 10^-12), (B_v(b_ν * input$slider1, input$slider1)*10^8), col = "dark red")
             title("Plank's Law and Wien's Law vs Frequency")}}
     )}
